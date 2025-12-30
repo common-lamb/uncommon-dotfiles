@@ -1,0 +1,30 @@
+
+#### shl
+#### small happy lisp-shell
+#### add just enough to a raw sbcl repl to get a usefull shell/cl mix
+
+# the readtable clesh:syntax breaks ql:quickload
+
+# providing shell-syntax and lisp-syntax to toggle clesh
+
+rlwrap \
+  --ansi-colour-aware \
+  --break-chars="(){}[]'\",;@/" \
+  --quote-characters="\"" \
+  --complete-filenames \
+  --case-insensitive \
+  --pass-sigint-as-sigterm \
+  --no-children \
+  --remember \
+  --renice \
+sbcl \
+  --eval '(ql:quickload :clesh)' \
+  --eval '(use-package :named-readtables)' \
+  --eval '(defun shl-shell () "activate clesh syntax" (in-readtable clesh:syntax))' \
+  --eval '(defun shl-lisp () "deactivate clesh syntax" (setf *readtable* (copy-readtable nil)))'
+
+### put these lines in the sbcl call if you feel fancy
+# # to use the standard .lisprc at start
+#  --userinit \
+# # to run some custom setup at start
+#  --load some-file.lisp \

@@ -1,0 +1,59 @@
+;; (format t "in sbclrc")
+
+;;; The following lines added by ql:add-to-init-file:
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+
+
+;;; The following lines added by ql:add-to-init-file:
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+
+;; Ref https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
+;; cffi doesn't care about LIBRARY_PATH, but this is where Guix adds
+;; all libraries. We forward these directories to cffi.
+
+;; synopsis of approach
+; (ql:quickload :cffi)
+;; (dolist (dir (uiop:getenv-pathnames "LIBRARY_PATH"))
+;;   ;; The path need / at the end, so ensure this, and ensure such a path exists
+;;   (pushnew (uiop:ensure-directory-pathname dir)
+;;            cffi:*foreign-library-directories*
+;;            :test #'equal))
+
+
+(ql:quickload :cffi)
+;; ensure reset list
+(setq cffi:*foreign-library-directories* 'nil)
+;; Warning: Trailing "/" matters!
+(dolist
+     (guix-profile
+      ;; get list of profile "~/.../lib/" strings
+      `(,(when (uiop:directory-exists-p "~/.guix-profile")
+           (format nil "~a/.guix-profile/lib/" (uiop:getenv "HOME")))
+        ,@(mapcar (lambda (d)
+                    (format nil "~a~a/lib/"
+                            (namestring d)
+                            (first (last (pathname-directory d)))))
+                  (uiop:subdirectories "~/.guix-extra-profiles/"))
+        "/usr/lib/x86_64-linux-gnu/"))
+   ;; forward value(s) to cffi:*foreign-library-directories* appending it
+   (push guix-profile
+         (symbol-value (find-symbol (string '*foreign-library-directories*)
+                                    (find-package 'cffi)))))
+
+;;check list
+;; (print cffi:*foreign-library-directories*)
+
+
+
+;; sudo apt-get install liblas-dev liblapack-dev
+;; lla, from lispstat, requires liblas to compile
+(defvar *lla-configuration*
+  '(:libraries ("/usr/lib/x86_64-linux-gnu/blas/libblas.so")))
