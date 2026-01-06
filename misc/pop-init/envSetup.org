@@ -1,0 +1,747 @@
+* Guix
+** DONE guix as foreign package manager
+CLOSED: [2026-01-03 Sat 14:21]
+
+#+begin_src bash
+curl -O https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh
+chmod +x guix-install.sh
+sudo ./guix-install.sh
+#+end_src
+reboot the system
+
+#+begin_src bash
+export GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
+
+GUIX_PROFILE="/home/user/.guix-profile"
+source "$GUIX_PROFILE/etc/profile"
+
+guix pull
+guix package -u
+
+#hint: After setting `PATH', run `hash guix' to make sure your shell refers to `/home/user/.config/guix/current/bin/guix'.
+hash guix
+#+end_src
+
+** install
+
+#+begin_src bash
+  # guix install sbcl # steel bank common lisp
+  # guix install stumpwm # stump window manager
+  # guix install font-dejavu # for stumpwm
+  # guix install cl-dejavu # for stumpwm
+  # guix install font-awesome # for stumpwm
+  # guix install fontconfig # for stumpwm
+  # guix install nyxt # cool browser that makes me feel like a noob
+
+  # guix install kitty # terminal with kittens lol
+  # guix install picom # compositor for window transparancy
+  # guix install feh # background picture
+
+  guix install xscreensaver #classic screensaver
+  guix install xlockmore #locks screen until password entered
+  guix install flameshot # screenshots
+  guix install neofetch # system info
+
+  # guix install emacs # an operating system
+  # guix install emacs-guix # guix package management from emacs
+  # guix install emacs-langtool # grammar checker
+  # guix install ispell # emacs spell checker
+  # guix install tree-sitter # parser for programming tools
+  guix install emacs-ellama # interface to text gen
+
+  # guix install git # gud
+  # guix install vim # never quit
+
+  # guix install rclone # mount remote drives
+  # guix install magic-wormhole # file sharing
+
+  # guix install python # slow scripting language
+  # guix install guix install R # slower
+  # guix install screen # gnu screen multiplexer
+  # guix install conda #disposable packages
+  # guix install gwl # guix workflow language
+  # guix install btop #monitoring
+  # guix install texlive # all the latex!
+#+end_src
+
+** DONE certificates
+CLOSED: [2026-01-03 Sat 15:13]
+guix install nss-certs
+# maybe: export SSL_CERT_DIR="$HOME/.guix-profile/etc/ssl/certs"
+# maybe: export SSL_CERT_FILE="$HOME/.guix-profile/etc/ssl/certs/ca-certificates.crt"
+# maybe: export GIT_SSL_CAINFO="$SSL_CERT_FILE"
+** DONE mount remotes
+CLOSED: [2026-01-04 Sun 22:15]
+
+rclone config #make new @ db
+rclone lsd db:
+mkdir -p ~/db/1
+rclone mount db:1 ~/db/1 --vfs-cache-mode full &
+#copy dotfiles into place
+#cd ~ && fusermount -u ~/db/1
+
+** other guix channels
+
+#ensure ~/.config/guix/channels.scm is in place and specifies the alternates
+guix pull
+guix describe
+
+check guix init past commits for env setup
+
+** DONE initialize system
+CLOSED: [2026-01-03 Sat 15:14]
+
+&&& page
+
+contents of ~/.bashrc should contain
+#+begin_src bash
+# Guix profile initialization
+GUIX_PROFILE="$HOME/.guix-profile"
+. "$GUIX_PROFILE/etc/profile"
+
+# source the default system profile
+. /etc/profile
+#+end_src
+
+* Tools
+** DONE spacemacs
+CLOSED: [2026-01-03 Sat 15:14]
+git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+# ensure ~/.spacemacs dotfile is in place
+emacs
+** guile
+
+guix install guile
+guix install guile-colorized
+guix install guile-readline
+guix install guile-f-scm
+
+contents of ~/.guile
+#+begin_src lisp
+  (use-modules (ice-9 readline)
+               (ice-9 colorized)
+               (texinfo reflection)) ;; help command
+  (activate-readline)
+  (activate-colorized)
+
+  (display "Welcome Back to ")
+#+end_src
+
+Geiser
+guix install emacs-geiser emacs-geiser-guile
+does the above replace the below?
+#+begin_src lisp
+  ;; partial contents of ~/.spacemacs
+  dotspacemacs-configuration-layers
+  '((scheme :variables scheme-implementations '(guile)))
+#+end_src
+
+Wisp
+guix install guile-wisp
+
+** DONE quicklisp
+CLOSED: [2026-01-03 Sat 23:14]
+
+curl -O https://beta.quicklisp.org/quicklisp.lisp
+sbcl --load quicklisp.lisp # eval, add to init
+
+# add ultra lisp distribution
+(ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)
+
+# lower ultralisp priority
+(ql-dist:all-dists)
+(ql-dist:preference (first (ql-dist:all-dists))) ;the universal time of setting
+(ql-dist:preference (second (ql-dist:all-dists)))
+
+(setf (ql-dist:preference (first (ql-dist:all-dists)))
+      (get-universal-time))
+
+(loop with dists = (sort (copy-list (ql-dist:enabled-dists))
+                         #'>
+                         :key #'ql-dist:preference)
+      for dist in dists
+      do (format t "* ~A (~A)~%"
+                 (ql-dist:name dist)
+                 (ql-dist:version dist)))
+
+** DONE qlot
+CLOSED: [2026-01-04 Sun 18:10]
+
+install and check
+#+begin_src bash
+  curl -L https://qlot.tech/installer | sh
+  #add to path in .bashrc
+  export PATH="${PATH}:/home/<user>/.local/share/qlot/bin"
+  source .bashrc
+  qlot # to test path
+
+  #nav to project
+  qlot init
+  qlot add mito
+  qlot install
+
+  # if you manually edit the project.asd file and have unsaved changes...
+  # ie. ls -al shows that the lockfile #.project.asd exists
+  # then call qlot, errors will occur
+  # there are a number of bugs I should specify and report
+  # just save or close the asd file!
+
+  qlot exec sbcl # to test startup
+  CL-USER> (quit)
+#+end_src
+
+add to spacemacs dotfile to start repl with qlot
+#+begin_src lisp
+
+  (defun dotspacemacs/user-config ()
+    ;; ...
+    (setq slime-lisp-implementations
+          "defaulting to qlot, choose alternates with negative prefix: M-- ,"
+          '((qlot ("qlot" "exec" "sbcl") :coding-system utf-8-unix)
+            (qlot-8G-heap ("qlot" "exec" "sbcl" "--dynamic-space-size" "8192") :coding-system utf-8-unix)
+            (sbcl ("sbcl") :coding-system utf-8-unix)))
+    ;; ...
+    )
+#+end_src
+
+start emacs and in lisp repl check that install is correct
+#+begin_src lisp
+  ;; nav to project
+  ;; open lisp file
+  ;; then start repl
+  (uiop:getcwd) ; expect root of project
+  ql:*quicklisp-home* ; expect: /root-ofproject/.qlot not: /home/<user>/quicklisp
+  (ql:where-is-system 'mito) ; expect: to find locally if previous qlot add mito qlot install was done
+  (ql:quickload :mito) ; we now know we are working from project local packages
+#+end_src
+
+optional repl work with qlot
+#+begin_src lisp
+  (ql:quickload :qlot)
+  (qlot:init #P"/home/<user>/this-project")
+  qlot:*project-root*
+  (ql:where-is-system 'click) ; expect NIL
+  (qlot:add 'mito)
+  (ql:where-is-system 'click) ; expect local
+  (qlot:install)
+#+end_src
+
+** zotero
+
+flatpak install zotero
+flatpak run org.zotero.Zotero
+Menu:edit->preferences->sync, email,pw
+# scihub
+edit-> preferences->advanced->config editor
+right click:extensions.zotero.findPDFs.resolvers->modify
+replace [] with:
+{ "name":"Sci-Hub", "method":"GET",
+  "url":"https://sci-hub.se/{doi}",
+  "mode":"html", "selector":"#pdf",
+  "attribute":"src", "automatic":true }
+&&&spacemacs zotero integration
+
+** DONE conda
+CLOSED: [2026-01-03 Sat 15:16]
+
+sudo env "PATH=$PATH" conda init
+source ~/.bashrc
+&&&fix term prompt
+
+** DONE nyxt
+CLOSED: [2026-01-04 Sun 21:44]
+
+#ensure ~/.config/nyxt/config.lisp is in place
+git clone -c http.sslverify=false https://github.com/rolling-robot/nx-zotero ~/.local/share/nyxt/extensions/nx-zotero
+&&&config is out of service
+
+** gpus
+
+guix install nvidia-nvml
+guix install gpustat
+sudo apt install nvtop
+#test
+nvidia-smi
+gpustat
+nvtop
+
+** ollama
+
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull zephyr
+#ollama run zephyr
+#ollama serve #default to port 11434
+
+#import GGUF models
+echo "FROM ./path/<some-model>.gguf" > Modelfile
+ollama create example -f Modelfile
+ollama run example
+
+** gptel
+#+begin_src bash
+guix install emacs-gptel
+#+end_src
+
+in .spacemacs user-config
+#+begin_src lisp
+    ;;gptel settings
+    (require 'gptel)
+                                          ;make a default model
+    (setq
+     gptel-model "claude-3-5-sonnet-20240620"
+     gptel-backend (gptel-make-anthropic "claude"
+                     :stream t :key "key"))
+                                          ;register a backend
+    (gptel-make-ollama "ollama"             ;Any name of your choosing
+      :host "localhost:11434"               ;Where it's running
+      :stream t                             ;Stream responses
+      :models '("zephyr" "ollama3"))        ;List of models
+                                          ;default
+    (setq gptel-default-mode "org-mode")
+                                          ;keybindings
+    (spacemacs/set-leader-keys "os" 'gptel-send)
+    (spacemacs/set-leader-keys "om" 'gptel-menu)
+#+end_src
+
+** R
+#+begin_src bash
+  conda create -n R
+  conda activate R
+  conda install R
+  conda activate R
+  emacs
+  #open an R file then evaluate the languageserver commmand
+#+end_src
+
+#+begin_src R
+library(languageserver)
+#+end_src
+
+** set hostname
+sudo hostnamectl set-hostname lambda-ABC
+hostnamectl
+
+** lisp-stat
+guix install openssl@1.1.1u
+(ql:quickload :lisp-stat)
+
+# ensure sbclrc is in place with the implementation cffi fix to find lib paths
+# https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
+# https://notabug.org/Ambrevar/dotfiles/src/master/.sbclrc
+# Ref: https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
+
+** DONE calfw
+CLOSED: [2026-01-03 Sat 15:18]
+guix install emacs-calfw
+#in user-config
+(require 'calfw)    '
+
+** agenda
+#in user-config
+(setq org-agenda-files '("~/db/1/org"))     '
+
+** DONE stumpwm
+CLOSED: [2026-01-04 Sun 21:43]
+sbcl
+(ql:quickload :clx)
+(ql:quickload :cl-ppcre)
+(ql:quickload :alexandria)
+
+git clone https://github.com/stumpwm/stumpwm-contrib.git ~/.config/stumpwm/modules
+git clone https://github.com/landakram/stumpwm-prescient ~/quicklisp/local-projects/stumpwm-prescient
+git clone https://github.com/goose121/clx-truetype.git ~/quicklisp/local-projects/clx-truetype
+
+#create /usr/share/xsessions/stump.desktop
+[Desktop Entry]
+Name=Stump
+Comment=This session logs you into Stump
+Exec=stumpwm
+Type=Application
+
+#fonts for stump
+guix install font-awesome
+cp ~/.guix-profile/share/fonts/truetype/fontawesome-webfont.ttf /usr/share/fonts/truetype/
+fc-cache -rv
+fc-list | grep <x>
+
+** DONE github sshkeys
+CLOSED: [2026-01-03 Sat 15:18]
+   #+begin_src bash
+     # Generate SSH key:
+        tag="<date>_<computer>"
+        ssh-keygen -t ed25519 -C "${tag}" -f ~/.ssh/id_${tag} #<Salt><SSHKey>
+        #tighten permissions
+        chmod 600 ~/.ssh/id_${tag}*
+     # Start ssh-agent:
+        eval "$(ssh-agent -s)"
+     # Add your SSH key to ssh-agent:
+        ssh-add ~/.ssh/id_${tag}
+     # Copy public key:
+        cat ~/.ssh/id_${tag}.pub
+
+     # send a line to ssh config for convenience
+        echo "" >> ~/.ssh/config
+        echo "#IdentityFile ~/.ssh/id_${tag}" >> ~/.ssh/config
+
+   #+end_src
+
+ Add the key to your GitHub account:
+   - Go to GitHub Settings > SSH and GPG keys
+   - Click "New SSH key"
+   - Paste your public key
+   - Title: <date>_<computer> from comment
+
+Edit ~/.ssh/config file
+#+begin_src bash
+# Normal GitHub account
+Host github.com
+    User git
+    HostName github.com
+    IdentityFile ~/.ssh/id_<normal>
+
+# UNIQUE GitHub account
+# consider Host github.com-<username>, reasonably true for one computer
+# Host service-computer-username, unique for single keys
+
+Host github.com-<username>
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_<${tag}>
+
+#may need to escape firewall on P22
+    #HostName ssh.github.com
+    #Port 443
+#+end_src
+
+Test the connection
+   #+begin_src bash
+   ssh -T git@github.com
+   ssh -T git@github.com-<username>
+   #+end_src
+
+- Use the appropriate Host when cloning or setting remote URLs
+  - instead of:
+    git remote add origin git@github.com:username/repo.git
+  - Use:
+    git remote add origin git@github.com-username:username/repo.git
+
+eg. normal
+    #+begin_src <project>/.git/config
+[remote "origin"]
+	url = git@github.com:common-lamb/<project>.git
+   #+end_src
+vs.
+eg. special
+    #+begin_src <project>/.git/config
+[remote "origin"]
+	url = git@github.com-common-lamb:common-lamb/<project>.git
+   #+end_src
+
+Also ensure safe directories if needed
+    #+begin_src ~/.gitconfig
+[safe]
+	directory = /mnt/QNAP/path/to/<project>
+   #+end_src
+
+** DONE server sshkeys
+CLOSED: [2026-01-03 Sat 15:18]
+
+create a new key
+   #+begin_src bash
+     # Generate SSH key:
+     tag="<date>_<computer>"
+     ssh-keygen -t ed25519 -C "${tag}" -f ~/.ssh/id_${tag} #<Salt><SSHKey>
+     #tighten permissions
+     chmod 600 ~/.ssh/id_${tag}*
+     # Start ssh-agent:
+     eval "$(ssh-agent -s)"
+     # Add your SSH key to ssh-agent:
+     ssh-add ~/.ssh/id_${tag}
+
+     #+end_src
+
+Copy public key to remote server
+   #+begin_src bash
+     ssh-copy-id -n -i ~/.ssh/id_${tag}.pub <user>@<hostname>
+     # if good, remove -n dryrun flag
+   #+end_src
+
+confirm with login
+#+begin_src bash
+     ssh -v <user>@<hostname>
+#+end_src
+
+optional add to ~/.bashrc for on login key decrypt
+#+begin_src bash
+  if [ -z "$SSH_AUTH_SOCK" ]; then # is ssh-agent running?
+      eval "$(ssh-agent -s)" # set shell environment variables if needed
+      ssh-add ~/.ssh/id_<specific>  # your specific private key file
+  fi
+     #+end_src
+
+optional add to local ~/.ssh/config file for nicknamed access
+#+begin_src bash
+    # Remote Server
+    Host <nickname-for-remote>
+        HostName <server-ip-or-domain>
+        User <username>
+        IdentityFile ~/.ssh/id_<tag>
+        Port 22
+#+end_src
+
+test host connection
+#+begin_src bash
+ssh <nickname-for-server>
+#+end_src
+
+** screen saver
+xscreensaver -nosplash &
+xscreensaver-settings
+# pick one screensaver (Gleideoscope) and ensure lock is deactivated!
+xscreensaver-command --activate
+# xscreensaver-command --lock #do not use on guix!
+
+xlock # on first use, enter password <salt><user>
+
+** email
+*** setup authsource
+
+Create an application password for gmail
+Enable two-factor authentication for your Gmail account and generate an app-specific password.
+https://support.google.com/accounts/answer/185833?hl=en
+
+Create the =~/.authinfo.gpg= file:
+   #+begin_src bash
+     guix install gnupg
+     gpg --gen-key #create a gpg key
+     touch ~/.authinfo
+     gpg -c ~/.authinfo #-> ~/.authinfo.gpg <salt><Gpg>
+     chmod 600 ~/.authinfo.gpg
+     rm ~/.authinfo
+   #+end_src
+
+Edit the encrypted file.gpg in emacs, Add your credentials:
+   #+begin_src
+   machine smtp.gmail.com login your.email@gmail.com password your-app-specific-password-noSPC port 587
+   machine imap.gmail.com login your.email@gmail.com password your-app-specific-password-noSPC port 993
+   #+end_src
+Save and close the file. GPG will automatically encrypt it.
+
+In user-config, ensure auth-source is set up:
+   #+begin_src lisp
+   (setq auth-sources '("~/.authinfo.gpg"))
+   #+end_src
+
+*** setup gnus
+add gnus layer to layers
+add gnus settings code to user-config
+   #+begin_src lisp
+
+  ;;gnus settings
+                                        ; set variables
+  (setq user-full-name "user"
+        user-mail-address "user@gmail.com")
+
+  (setq auth-sources '("~/.authinfo.gpg"))
+                                        ; get email store in nnml
+  (setq gnus-secondary-select-methods
+        '((nnimap "gmail"
+                  (nnimap-address "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash") ;move expired to
+                  (nnmail-expiry-wait immediate) ;marked expired, process now
+                  (nnimap-stream ssl))))
+                                        ;send email via gmail
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-default-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587);set sending SMTP service port
+                                        ;make gnus NOT ignore [Gmail] mailboxes
+  (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+
+                                        ;archive outgoing email in sent folder on imap.gmail.com
+  (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+        gnus-message-archive-group "[Gmail]/Sent Mail")
+                                        ;set posting styles
+  (setq gnus-posting-styles
+        '(
+          ((header "to" "user@gmail.com") ;set return email address
+           (address "user@gmail.com"))))
+                                        ;store email in a directory
+  (setq nnml-directory "~/db/1/email")
+  (setq message-directory "~/db/1/email")
+
+   #+end_src
+
+* advanced environment
+** spatial tools
+guix pull
+guix package -u
+
+guix install qgis
+guix install gdal
+
+** plot vega
+ sudo apt-get install liblas-dev liblapack-dev
+
+** python language server
+guix install node
+
+** normalize conda environment
+
+guix install python-rasterio
+pip install rasterio
+pip install matplotlib
+guix install python-numpy
+guix install python-matplotlib
+guix install is good, but sbcl in emacs calling to py causes environment and loading issues
+
+** orpheo tool box
+
+#+begin_src bash
+  cd ~/Downloads
+  curl https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-9.0.0-Linux.tar.gz -O
+
+  mkdir ~/otb
+  tar xf ~/Downloads/OTB-9.0.0-Linux.tar.gz --one-top-level=/home/user/otb
+  source ~/otb/otbenv.profile
+
+  otbcli_Smoothing -help # test installation
+#+end_src
+
+** segment geospatial
+
+https://samgeo.gishub.org/
+
+conda create -n geo -c conda-forge --no-default-packages mamba
+conda activate geo
+mamba install -c conda-forge python segment-geospatial groundingdino-py segment-anything-fast jupyter
+
+** grid
+
+poissonfish.github.io
+
+# sudo apt-get install libxcb-cursor-dev
+conda create -n grid -c conda-forge --no-default-packages mamba
+conda activate grid
+mamba install -c conda-forge python rasterio qt pyqt
+pip install photo_grid
+
+** model environment
+
+conda create -n model --no-default-packages mamba
+conda activate model
+
+full requirements
+mamba install  -c conda-forge -c timeseriesai -c pytorch python shapely aenum scikit-learn lightgbm "geopandas<1" sentinelhub eo-learn eo-learn-visualization fastai numba timeseriesai::tsai cuda-toolkit pytorch pytorch::pytorch-cuda ipykernel
+
+worked
+mamba install  -c conda-forge -c timeseriesai -c pytorch \
+eo-learn eo-learn-visualization ipykernel \
+"geopandas<1" python shapely aenum sentinelhub numba \
+fastai timeseriesai::tsai scikit-learn \
+lightgbm pytorch pytorch-cuda
+#
+# cuda-toolkit # borked
+
+try constrain py version: 12 hour run, massive mem usage
+conda install  -c conda-forge -c timeseriesai -c pytorch \
+"python<=3.11" \
+ipykernel "geopandas<1" shapely aenum sentinelhub numba \
+fastai timeseriesai::tsai scikit-learn \
+lightgbm pytorch pytorch-cuda cuda-toolkit \
+eo-learn eo-learn-visualization
+
+worked
+mamba install  -c conda-forge -c timeseriesai -c pytorch \
+"python" \
+ipykernel "geopandas<1" shapely aenum sentinelhub numba \
+fastai timeseriesai::tsai scikit-learn lightgbm \
+eo-learn eo-learn-visualization
+#
+conda list | grep pytorch # version is 2.0.0
+pip install torch==2.0.0
+
+** analysis environment
+
+create conda environment
+#+begin_src bash
+      conda create -n analysis --no-default-packages mamba
+      conda activate analysis
+      mamba install  -c conda-forge gdal sbcl python gsl pingouin scikit-learn scipy statsmodels geopandas rasterio curl numpy r matplotlib scikit-plot
+#+end_src
+
+qlot environment setup
+#+begin_src bash
+  # nav to project where project.asd, project.lisp exists
+  qlot init # creates an empty qlfile
+  qlot install # adds .qlot/ and the quicklisp source
+  # also just the .asd dependencies found on quicklisp
+
+  # updates lockfile and pulls repo
+  qlot add github coalton-lang/coalton
+  qlot add github slburson/fset
+  qlot add github slburson/misc-extensions
+  # adds ultralisp source, pulls repo
+  qlot add ultralisp fosskers-filepaths
+
+  qlot install # checks system def, checks lockfile
+#+end_src
+
+set R library path variable for compilation
+#+begin_src lisp
+  ;; open analysis.lisp
+  ;; get conda env
+  ;; M-x conda-env-activate "analysis"
+  ;; attach repl
+  ;; M-- ,' "qlot-8G-heap"
+
+  (ql:quickload :rcl) ;; errors on compilation, cant find libR.so
+  ;; in file .qlot/dists/quicklisp/software/rcl-20201220-http/config.lisp
+
+  ;; modify path to find libR.so
+  ;; to wherever library for R is. /path-to/R/lib/
+  ;;   if: /home/<user>/miniconda3/envs/analysis/lib/R/lib/libR.so
+  ;; then: /home/<user>/miniconda3/envs/analysis/lib/R/
+  (defvar *r-home*
+    ;; ...
+    ;; from
+    ;; #-(or darwin windows) "/usr/lib/R/"
+    ;; delete the line and change to
+    #-(or darwin windows) "/home/<user>/miniconda3/envs/analysis/lib/R/"
+    )
+
+  ;; kill repl ,q RET
+  ;; restart repl
+  (ql:quickload :rcl) ; success
+  ;; kill repl
+#+end_src
+
+this link is hard to find
+https://rcl.common-lisp.dev/
+
+set cran mirror
+edit file "/home/<user>/miniconda3/envs/analysis/lib/R/library/base/R/Rprofile"
+# from
+# options(repos = c(CRAN="@CRAN@"))
+# to
+options(repos = c(CRAN="https://mirror.csclub.uwaterloo.ca/CRAN/"))
+
+* vvv &&& vvv
+** remote desktop
+xpra browser access
+** cloudflare
+cloudflare client
+** vpn network
+n2n
+** Host a site
+*** linode instance
+get ip address
+*** subdomain on domain registrar
+** turn off deep sleep
+** fonts correct setup
+guix install font-adobe-source-code-pro
+moving to standard install location?
+enable discovery of guix fonts from emacs? bash can see all but common lisp had a limited view...
+
+** audio correct setup
+** setup guix home
