@@ -22,7 +22,8 @@ guix package -u
 hash guix
 #+end_src
 
-** install
+** DONE install
+CLOSED: [2026-01-05 Mon 21:42]
 
 #+begin_src bash
   # guix install sbcl # steel bank common lisp
@@ -37,12 +38,13 @@ hash guix
   # guix install picom # compositor for window transparancy
   # guix install feh # background picture
 
-  guix install xscreensaver #classic screensaver
-  guix install xlockmore #locks screen until password entered
-  guix install flameshot # screenshots
-  guix install neofetch # system info
+  # guix install xscreensaver #classic screensaver
+  # guix install xlockmore #locks screen until password entered
+  # guix install flameshot # screenshots
+  # guix install neofetch # system info
 
-  # guix install emacs # an operating system
+  # # guix
+  # install emacs # an operating system
   # guix install emacs-guix # guix package management from emacs
   # guix install emacs-langtool # grammar checker
   # guix install ispell # emacs spell checker
@@ -317,7 +319,8 @@ in .spacemacs user-config
 library(languageserver)
 #+end_src
 
-** set hostname
+** DONE set hostname
+CLOSED: [2026-01-05 Mon 21:44]
 sudo hostnamectl set-hostname lambda-ABC
 hostnamectl
 
@@ -336,7 +339,8 @@ guix install emacs-calfw
 #in user-config
 (require 'calfw)    '
 
-** agenda
+** DONE agenda
+CLOSED: [2026-01-05 Mon 21:44]
 #in user-config
 (setq org-agenda-files '("~/db/1/org"))     '
 
@@ -494,7 +498,8 @@ test host connection
 ssh <nickname-for-server>
 #+end_src
 
-** screen saver
+** DONE screen saver
+CLOSED: [2026-01-05 Mon 21:46]
 xscreensaver -nosplash &
 xscreensaver-settings
 # pick one screensaver (Gleideoscope) and ensure lock is deactivated!
