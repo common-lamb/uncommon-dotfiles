@@ -38,23 +38,55 @@ This function should only modify configuration layer settings."
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     auto-completion
+                                        ;general
      better-defaults
-     emacs-lisp
-     git
      helm
+     auto-completion
+     treemacs
+     themes-megapack
+     theming
+
+                                        ; networking
+     eww
+     gnus
+
+                                        ;programming
      lsp
-     markdown
-     multiple-cursors
-     org
-     (shell :variables
-            shell-default-height 30
-            shell-default-position 'bottom)
-     spell-checking
      syntax-checking
      version-control
-     treemacs)
+     git
+     csv
+     python
+     yaml
+     markdown
+     mermaid
+     shell-scripts
+     (shell :variables
+            shell-default-height 20
+            shell-default-position 'bottom)
+     ;; (ess
+     ;;  :variables ess-r-backend 'lsp)
+     ;; (conda
+     ;;  :variables conda-anaconda-home "~/.conda")
+                                        ; lisp layers
+     emacs-lisp
+     common-lisp
+     parinfer
+     ;; (scheme :variables scheme-implementations '(guile))
 
+                                        ;writing layers
+     (org
+      :variables
+      org-enable-reveal-js-support t)
+     (llm-client :variables
+                 llm-client-enable-gptel t)
+     pdf
+     finance
+     ;; (languagetool :variables
+     ;;               languagetool-show-error-on-jump t
+     ;;               langtool-default-language "en-CA")
+     multiple-cursors
+     spell-checking)
 
    ;; List of additional packages that will be installed without being wrapped
    ;; in a layer (generally the packages are installed only and should still be
@@ -64,7 +96,9 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(citeproc-org
+                                      citeproc
+                                      oc-csl)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -231,7 +265,7 @@ It should only modify the values of Spacemacs settings."
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 10.0
+                               :size 15.0
                                :weight normal
                                :width normal)
 
@@ -356,7 +390,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
-   dotspacemacs-fullscreen-at-startup nil
+   dotspacemacs-fullscreen-at-startup t
 
    ;; If non-nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
    ;; Use to disable fullscreen animations in OSX. (default nil)
@@ -425,7 +459,7 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers 'visual
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
@@ -443,7 +477,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc...
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
-   dotspacemacs-smart-closing-parenthesis nil
+   dotspacemacs-smart-closing-parenthesis t
 
    ;; Select a scope to highlight delimiters. Possible values are `any',
    ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
@@ -515,7 +549,7 @@ It should only modify the values of Spacemacs settings."
    ;; which major modes have whitespace cleanup enabled or disabled
    ;; by default.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup 'trailing
 
    ;; If non-nil activate `clean-aindent-mode' which tries to correct
    ;; virtual indentation of simple modes. This can interfere with mode specific
@@ -572,7 +606,83 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first.")
 This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
-before packages are loaded.")
+before packages are loaded."
+
+
+  ;; ;; mermaid executable
+  ;; (setq ob-mermaid-cli-path "/home/user/.var/app/org.gnu.emacs/data/node/bin/mmdc")
+
+  ;; ;; default browser
+  ;; (setq browse-url-browser-function 'browse-url-generic)
+  ;; (setq browse-url-generic-program "nyxt")
+
+  ;; ;; auto update changed buffers
+  ;; (global-auto-revert-mode) ;keep buffers up to date with disks
+  ;; (setq auto-revert-use-notify nil) ;poll disk dont wait for os
+  ;; (auto-save-visited-mode) ;make auto save same as explicit save
+
+  ;; ;; orgmode settings
+  ;; (setq org-agenda-files '("~/db/1/org"))
+
+  ;;calfw settings
+  (require 'calfw-org)
+                                        ; &&& keybindings
+  (spacemacs/set-leader-keys "aov" 'cfw:open-org-calendar)
+
+  ;; ;;gnus settings
+  ;;                                       ; set variables
+  ;; (setq user-full-name "user"
+  ;;       user-mail-address "user@gmail.com")
+
+  ;; (setq auth-sources '("~/.authinfo.gpg"))
+  ;;                                       ; get email store in nnml
+  ;; (setq gnus-secondary-select-methods
+  ;;       '((nnimap "gmail"
+  ;;                 (nnimap-address "imap.gmail.com")
+  ;;                 (nnimap-server-port 993)
+  ;;                 (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash") ;move expired to
+  ;;                 (nnmail-expiry-wait immediate) ;marked expired, process now
+  ;;                 (nnimap-stream ssl))))
+  ;;                                       ;send email via gmail
+  ;; (setq message-send-mail-function 'smtpmail-send-it
+  ;;       smtpmail-default-smtp-server "smtp.gmail.com"
+  ;;       smtpmail-smtp-service 587);set sending SMTP service port
+  ;;                                       ;make gnus NOT ignore [Gmail] mailboxes
+  ;; (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+
+  ;;                                       ;archive outgoing email in sent folder on imap.gmail.com
+  ;; (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+  ;;       gnus-message-archive-group "[Gmail]/Sent Mail")
+  ;;                                       ;set posting styles
+  ;; (setq gnus-posting-styles
+  ;;       '(
+  ;;         ((header "to" "user@gmail.com") ;set return email address
+  ;;          (address "user@gmail.com"))))
+  ;;                                       ;store email in a directory
+  ;; (setq nnml-directory "~/db/1/email")
+  ;; (setq message-directory "~/db/1/email")
+
+  ;;gptel settings
+  (require 'gptel)
+                                        ;make a default model
+  (setq
+   gptel-model "claude-sonnet-4-5"
+   gptel-backend (gptel-make-anthropic "claude"
+                   :stream t :key "key"))
+  ;;                                       ;register a backend
+  ;; (gptel-make-ollama "ollama"             ;Any name of your choosing
+  ;;   :host "localhost:11434"               ;Where it's running
+  ;;   :stream t                             ;Stream responses
+  ;;   :models '("zephyr" "ollama3"))        ;List of models
+                                        ;default
+  (setq gptel-default-mode "org-mode")
+                                        ;keybindings
+  ;; (spacemacs/set-leader-keys "os" 'gptel-send)
+  ;; (spacemacs/set-leader-keys "om" 'gptel-menu)
+
+  (defun absorb-weird-parens-at-the-end-of-user-config ()
+    (print "auto generated stuff below was messing up my user config parens.")))
+
 
 
 
