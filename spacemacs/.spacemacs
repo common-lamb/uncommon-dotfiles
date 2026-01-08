@@ -59,7 +59,7 @@ This function should only modify configuration layer settings."
      python
      yaml
      markdown
-     mermaid
+     ;; mermaid &&& not recognized
      shell-scripts
      (shell :variables
             shell-default-height 20
@@ -97,8 +97,9 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(citeproc-org
-                                      citeproc
-                                      oc-csl)
+                                      ;; oc-csl ;; package unavailable
+                                      citeproc)
+
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
