@@ -62,6 +62,7 @@ This function should only modify configuration layer settings."
      ;; mermaid &&& not recognized
      shell-scripts
      (shell :variables
+            shell-default-shell 'eshell
             shell-default-height 20
             shell-default-position 'bottom)
      (ess
