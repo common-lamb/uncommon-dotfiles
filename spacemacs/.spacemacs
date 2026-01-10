@@ -64,10 +64,11 @@ This function should only modify configuration layer settings."
      (shell :variables
             shell-default-height 20
             shell-default-position 'bottom)
-     ;; (ess
-     ;;  :variables ess-r-backend 'lsp)
-     ;; (conda
-     ;;  :variables conda-anaconda-home "~/.conda")
+     (ess
+      :variables ess-r-backend 'lsp)
+     (conda
+      :variables conda-anaconda-home "~/.conda")
+
                                         ; lisp layers
      emacs-lisp
      common-lisp
