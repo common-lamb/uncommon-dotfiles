@@ -67,7 +67,7 @@ This function should only modify configuration layer settings."
      (ess
       :variables ess-r-backend 'lsp)
      (conda
-      :variables conda-anaconda-home "~/.conda")
+      :variables conda-anaconda-home "~/conda")
 
                                         ; lisp layers
      emacs-lisp
