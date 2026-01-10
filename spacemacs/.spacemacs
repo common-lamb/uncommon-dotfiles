@@ -83,9 +83,9 @@ This function should only modify configuration layer settings."
                  llm-client-enable-gptel t)
      pdf
      finance
-     (languagetool :variables
-                   languagetool-show-error-on-jump t
-                   langtool-default-language "en-US")
+     ;; (languagetool :variables
+     ;;               languagetool-show-error-on-jump t
+     ;;               langtool-default-language "en-US")
      multiple-cursors
      spell-checking)
 
