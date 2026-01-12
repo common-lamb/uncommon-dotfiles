@@ -41,7 +41,13 @@ This function should only modify configuration layer settings."
                                         ;general
      better-defaults
      helm
-     auto-completion
+     (auto-completion :variables
+                      auto-completion-complete-with-key-sequence-delay 0.1
+                      auto-completion-minimum-prefix-length 2
+                      auto-completion-idle-delay 0.2
+                      auto-completion-private-snippets-directory nil
+                      auto-completion-enable-snippets-in-popup nil
+                      auto-completion-enable-help-tooltip nil)
      treemacs
      themes-megapack
      theming
@@ -62,13 +68,11 @@ This function should only modify configuration layer settings."
      ;; mermaid &&& not recognized
      shell-scripts
      (shell :variables
-            shell-default-shell 'eshell
             shell-default-height 20
-            shell-default-position 'bottom)
-     (ess
-      :variables ess-r-backend 'lsp)
-     (conda
-      :variables conda-anaconda-home "~/conda")
+            shell-default-position 'bottom
+            shell-default-shell 'shell)
+     (conda :variables
+            conda-anaconda-home "~/conda")
 
                                         ; lisp layers
      emacs-lisp
@@ -625,7 +629,15 @@ before packages are loaded."
   ;; (auto-save-visited-mode) ;make auto save same as explicit save
 
   ;; ;; orgmode settings
-  ;; (setq org-agenda-files '("~/db/1/org"))
+  (setq org-agenda-files '("~/mnt/db/1/org" "~/org"))
+  (setq org-refile-targets '((nil :maxlevel . 3)
+                             (org-agenda-files :maxlevel . 3)))
+
+  ;; qlot
+  (setq slime-lisp-implementations
+        '((qlot ("qlot" "exec" "sbcl") :coding-system utf-8-unix)
+          (qlot-32G-heap ("qlot" "exec" "sbcl" "--dynamic-space-size" "32768") :coding-system utf-8-unix)
+          (sbcl ("sbcl") :coding-system utf-8-unix)))
 
   ;;calfw settings
   (require 'calfw-org)
@@ -665,20 +677,20 @@ before packages are loaded."
   ;; (setq nnml-directory "~/db/1/email")
   ;; (setq message-directory "~/db/1/email")
 
-  ;;gptel settings
-  (require 'gptel)
-                                        ;make a default model
-  (setq
-   gptel-model "claude-sonnet-4-5"
-   gptel-backend (gptel-make-anthropic "claude"
-                   :stream t :key "key"))
+  ;; ;; gptel settings
+  ;; (require 'gptel)
+  ;;                                       ;make a default model
+  ;; (setq
+  ;;  gptel-model "claude-sonnet-4-5"
+  ;;  gptel-backend (gptel-make-anthropic "claude"
+  ;;                  :stream t :key "key"))
   ;;                                       ;register a backend
   ;; (gptel-make-ollama "ollama"             ;Any name of your choosing
   ;;   :host "localhost:11434"               ;Where it's running
   ;;   :stream t                             ;Stream responses
   ;;   :models '("zephyr" "ollama3"))        ;List of models
                                         ;default
-  (setq gptel-default-mode "org-mode")
+  ;; (setq gptel-default-mode "org-mode")
                                         ;keybindings
   ;; (spacemacs/set-leader-keys "os" 'gptel-send)
   ;; (spacemacs/set-leader-keys "om" 'gptel-menu)
