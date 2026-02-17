@@ -58,7 +58,6 @@
 #-ocicl
 (let ((init (uiop:native-namestring "~/.local/share/ocicl/ocicl-runtime.lisp")))
   (when (probe-file init)
-    (print "===================================loading init")
     (load init)))
 
 #+ocicl
@@ -78,7 +77,6 @@ ocicl will find and prioritize(maybe) systems in ~/common-lisp/
 pull any required systems to ./ocicl/ in target-dir
 asdf will compile where needed
 "
-  (print "===================================initializing ocicl")
   (asdf:initialize-source-registry ;; &&& asdf docs say this is naughty
    (list :source-registry
          (list :directory (probe-file target-dir))
@@ -92,6 +90,7 @@ asdf will compile where needed
   (setf ocicl-runtime:*local-only* strict)
   ;; return as set
   asdf:*source-registry-parameter*)
+
 
 #+ocicl
 (ocicl-runtime-set-registry)
