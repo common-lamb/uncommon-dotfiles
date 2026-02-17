@@ -1,5 +1,6 @@
 (format t "~&in sbclrc~%")
 
+;; QUICKLISP
 ;; The following lines added by ql:add-to-init-file:
 #-quicklisp
 (let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
@@ -7,6 +8,7 @@
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
 
+;; CFFI
 ;; Ref
 ;; https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
 ;; https://lists.gnu.org/archive/html/bug-guix/2020-01/msg00133.html
@@ -46,7 +48,49 @@
 ;;check list
 ;; (print cffi:*foreign-library-directories*)
 
+;; LISP-STAT DEPS
 ;; sudo apt-get install liblas-dev liblapack-dev
 ;; lla, from lispstat, requires liblas to compile
 ;; (defvar *lla-configuration*
 ;;   '(:libraries ("/usr/lib/x86_64-linux-gnu/blas/libblas.so")))
+
+;; OCICL
+;; from ocicl setup
+#-ocicl
+(let ((init (uiop:native-namestring "~/.local/share/ocicl/ocicl/ocicl-runtime.lisp")))
+  (when (probe-file init)
+    (load init)))
+
+#+ocicl
+(defun ocicl-runtime-set-registry (&key (target-dir (uiop:getcwd)) (strict nil))
+"
+sets asdf:initialize-source-registry to target-dir and ~/common-lisp/
+strict sets ocicl:*local-only*
+
+usage:
+clone any systems into common-lisp
+symlink any local asd files into common-lisp
+call this fun to register
+call asdf:load-system :my.system
+
+result:
+ocicl will find and prioritize(maybe) systems in ~/common-lisp/
+pull any required systems to ./ocicl/ in target-dir
+asdf will compile where needed
+"
+  (asdf:initialize-source-registry ;; &&& asdf docs say this is naughty
+   (list :source-registry
+         (list :directory (probe-file target-dir))
+         (list :tree (uiop:native-namestring "~/common-lisp"))
+         :inherit-configuration))
+  ;; if package exports change between compilations
+  ;; the default (:warn t) causes asdf to error with no restarts
+  ;; mandating errors provides restart options
+  (setf *on-package-variance* '(:error t))
+  ;; when t no global or parent ocicl.csv used
+  (setf ocicl-runtime:*local-only* strict)
+  ;; return as set
+  asdf:*source-registry-parameter*)
+
+#+ocicl
+(ocicl-runtime-set-registry)
