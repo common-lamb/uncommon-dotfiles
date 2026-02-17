@@ -55,14 +55,15 @@
 ;;   '(:libraries ("/usr/lib/x86_64-linux-gnu/blas/libblas.so")))
 
 ;; OCICL
-;; from ocicl setup
 #-ocicl
-(let ((init (uiop:native-namestring "~/.local/share/ocicl/ocicl/ocicl-runtime.lisp")))
+(let ((init (uiop:native-namestring "~/.local/share/ocicl/ocicl-runtime.lisp")))
   (when (probe-file init)
+    (print "===================================loading init")
     (load init)))
 
+#-ocicl
 (defun ocicl-runtime-set-registry (&key (target-dir (uiop:getcwd)) (strict nil))
-"
+  "
 sets asdf:initialize-source-registry to target-dir and ~/common-lisp/
 strict sets ocicl:*local-only*
 
@@ -77,6 +78,7 @@ ocicl will find and prioritize(maybe) systems in ~/common-lisp/
 pull any required systems to ./ocicl/ in target-dir
 asdf will compile where needed
 "
+  (print "===================================initializing ocicl")
   (asdf:initialize-source-registry ;; &&& asdf docs say this is naughty
    (list :source-registry
          (list :directory (probe-file target-dir))
