@@ -61,7 +61,7 @@
     (print "===================================loading init")
     (load init)))
 
-#-ocicl
+#+ocicl
 (defun ocicl-runtime-set-registry (&key (target-dir (uiop:getcwd)) (strict nil))
   "
 sets asdf:initialize-source-registry to target-dir and ~/common-lisp/
