@@ -91,6 +91,5 @@ asdf will compile where needed
   ;; return as set
   asdf:*source-registry-parameter*)
 
-
 #+ocicl
-(ocicl-runtime-set-registry)
+;; (ocicl-runtime-set-registry)
