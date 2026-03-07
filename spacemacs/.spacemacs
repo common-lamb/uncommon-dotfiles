@@ -634,10 +634,10 @@ before packages are loaded."
                              (org-agenda-files :maxlevel . 3)))
 
   ;; qlot
-  (setq slime-lisp-implementations
-        '((qlot ("qlot" "exec" "sbcl") :coding-system utf-8-unix)
-          (qlot-32G-heap ("qlot" "exec" "sbcl" "--dynamic-space-size" "32768") :coding-system utf-8-unix)
-          (sbcl ("sbcl") :coding-system utf-8-unix)))
+  ;; (setq slime-lisp-implementations
+  ;;       '((qlot ("qlot" "exec" "sbcl") :coding-system utf-8-unix)
+  ;;         (qlot-32G-heap ("qlot" "exec" "sbcl" "--dynamic-space-size" "32768") :coding-system utf-8-unix)
+  ;;         (sbcl ("sbcl") :coding-system utf-8-unix)))
 
   ;;calfw settings
   (require 'calfw-org)
