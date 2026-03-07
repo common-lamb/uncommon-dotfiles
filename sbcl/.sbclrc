@@ -102,4 +102,4 @@ asdf will compile where needed
       (format t "~%cl-mcp server started on: ~A ~%" cl-mcp:*http-server-port*)
       (force-output))))
 
-(cl-mcp-server-start)
+;; (cl-mcp-server-start)
