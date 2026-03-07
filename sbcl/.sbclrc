@@ -92,7 +92,7 @@ asdf will compile where needed
   asdf:*source-registry-parameter*)
 
 ;; cl-mcp server startup
-(asdf:load-system :cl-mcp-server)
+(asdf:load-system :cl-mcp)
 
 (defun cl-mcp-server-start ()
   "Start the cl-mcp TCP server"
