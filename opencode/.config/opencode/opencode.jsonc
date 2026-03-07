@@ -16,14 +16,14 @@
     "common-lisp-mcp": {
       // remote: assume the mcp is being served
       "type": "remote",
-      "url": "https://localhost:{env:cl_mcp_port}",
+      "url": "https://localhost:{env:cl_mcp_port}/mcp",
       "enabled": true
     },
 
     "lem-editor-mcp": {
       // remote: assume the mcp is being served
       "type": "remote",
-      "url": "https://localhost:{env:lem_mcp_port}",
+      "url": "https://localhost:{env:lem_mcp_port}/mcp",
       "enabled": true
     }
   }

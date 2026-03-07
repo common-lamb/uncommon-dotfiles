@@ -17,7 +17,6 @@
 
 (cl-mcp-server-start)
 
-
 ;; show completion list instantly
 (add-hook *prompt-after-activate-hook*
           (lambda ()
@@ -25,4 +24,3 @@
 (add-hook *prompt-deactivate-hook*
           (lambda ()
             (lem/completion-mode:completion-end)))
-;;
