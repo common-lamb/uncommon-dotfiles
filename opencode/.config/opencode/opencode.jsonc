@@ -1,0 +1,30 @@
+
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "provider": {
+    "llamacpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama-local-server",
+      "options": {
+        "baseURL": "http://localhost:{env:llama_port}/v1"
+      }
+    }
+  },
+
+  "mcp": {
+    "common-lisp-mcp": {
+      // remote: assume the mcp is being served
+      "type": "remote",
+      "url": "https://localhost:{env:cl_mcp_port}",
+      "enabled": true
+    },
+
+    "lem-editor-mcp": {
+      // remote: assume the mcp is being served
+      "type": "remote",
+      "url": "https://localhost:{env:lem_mcp_port}",
+      "enabled": true
+    }
+  }
+}
