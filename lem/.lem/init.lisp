@@ -63,7 +63,7 @@ asdf will compile where needed
       (format t "~%cl-mcp:fs-set-project-root set at: ~A ~%" (uiop:getcwd))
       (force-output))))
 
-(cl-mcp-server-start)
+;; (cl-mcp-server-start)
 
 ;; lem-mcp server startup
 ;; (lem:mcp-server-start)
