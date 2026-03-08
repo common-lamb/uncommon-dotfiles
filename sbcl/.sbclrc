@@ -61,7 +61,7 @@
     (load init)))
 
 #+ocicl
-(defun ocicl-runtime-set-registry (&key (target-dir (uiop:getcwd)) (strict nil))
+(defun ocicl-runtime-set-registry (&key (target-dir (user-homedir-pathname)) (strict nil))
   "
 sets asdf:initialize-source-registry to target-dir and ~/common-lisp/
 strict sets ocicl:*local-only*
@@ -90,3 +90,5 @@ asdf will compile where needed
   (setf ocicl-runtime:*local-only* strict)
   ;; return as set
   asdf:*source-registry-parameter*)
+
+(ocicl-runtime-set-registry)
