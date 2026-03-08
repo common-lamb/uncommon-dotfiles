@@ -1,5 +1,16 @@
 (format t "in lem rc")
 
+;; show completion list instantly
+(add-hook *prompt-after-activate-hook*
+          (lambda ()
+            (call-command 'lem/prompt-window::prompt-completion nil)))
+(add-hook *prompt-deactivate-hook*
+          (lambda ()
+            (lem/completion-mode:completion-end)))
+
+;; Start in vi-mode
+(lem-vi-mode:vi-mode)
+
 ;; OCICL
 #-ocicl
 (let ((init (uiop:native-namestring "~/.local/share/ocicl/ocicl-runtime.lisp")))
@@ -54,14 +65,3 @@ asdf will compile where needed
 
 ;; lem-mcp server startup
 ;; (lem:mcp-server-start)
-
-;; show completion list instantly
-(add-hook *prompt-after-activate-hook*
-          (lambda ()
-            (call-command 'lem/prompt-window::prompt-completion nil)))
-(add-hook *prompt-deactivate-hook*
-          (lambda ()
-            (lem/completion-mode:completion-end)))
-
-;; Start in vi-mode
-(lem-vi-mode:vi-mode)
