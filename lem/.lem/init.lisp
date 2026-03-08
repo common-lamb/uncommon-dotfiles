@@ -59,6 +59,8 @@ asdf will compile where needed
     (progn
       (cl-mcp:start-http-server :port (uiop:getenv "cl_mcp_port"))
       (format t "~%cl-mcp server started on: ~A ~%" cl-mcp:*http-server-port*)
+      (cl-mcp:fs-set-project-root (namestring (uiop:getcwd)))
+      (format t "~%cl-mcp:fs-set-project-root set at: ~A ~%" (uiop:getcwd))
       (force-output))))
 
 (cl-mcp-server-start)
