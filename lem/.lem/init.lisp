@@ -57,13 +57,13 @@ asdf will compile where needed
   "Start the cl-mcp TCP server"
   (when (null cl-mcp:*http-server*)
     (progn
-      (cl-mcp:start-http-server :port (uiop:getenv "cl_mcp_port"))
-      (format t "~%cl-mcp server started on: ~A ~%" cl-mcp:*http-server-port*)
-      (cl-mcp/src/fs:fs-set-project-root (namestring (uiop:getcwd)))
-      (format t "~%cl-mcp:fs-set-project-root set at: ~A ~%" (uiop:getcwd))
-      (force-output))))
+      (cl-mcp:start-http-server)
+      (format t "~%cl-mcp server started on: ~A ~%" cl-mcp:*http-server-port*)))
+  (cl-mcp/src/fs:fs-set-project-root (namestring (uiop:getcwd)))
+  (format t "~%cl-mcp:fs-set-project-root set at: ~A ~%" (uiop:getcwd))
+  )
 
-;; (cl-mcp-server-start)
+(cl-mcp-server-start)
 
 ;; lem-mcp server startup
 ;; (lem:mcp-server-start)
