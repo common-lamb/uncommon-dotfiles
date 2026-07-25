@@ -1,7 +1,9 @@
 ;;; -*-  mode: lisp; -*-
 
-;single page stumpwmrc, with sensible defaults that just works out of the box. Move it to ~/.config/stumpwm/config
-;git clone git@github.com:stumpwm/stumpwm-contrib.git ~/.config/stumpwm/modules
+; one page stumpwmrc, with sensible defaults that just works.
+
+; Move this file to ~/.config/stumpwm/config
+; git clone git@github.com:stumpwm/stumpwm-contrib.git ~/.config/stumpwm/modules
 
 ;thanks to these hackers for the hacks
 ;https://config.phundrak.com/stumpwm
@@ -51,6 +53,7 @@
 ;==load stumpwm-contrib modules
 
 ;==path to modules
+; git clone git@github.com:stumpwm/stumpwm-contrib.git ~/.config/stumpwm/modules
 (init-load-path #p"~/.config/stumpwm/modules/")
 
 ;==modules
@@ -97,17 +100,15 @@ Press super-space for Happy Hacking!")
 ;index fonts
 (xft:cache-fonts)
 
-(print "MARK")
-
 (set-font (list
-	   (make-instance 'xft:font
-			  :family "DejaVu Sans Mono"
-			  :subfamily "Bold"
-			  :size 12)
-	   (make-instance 'xft:font
-			  :family "FontAwesome"
-			  :subfamily "Regular"
-			  :size 12)))
+	         (make-instance 'xft:font
+			                    :family "DejaVu Sans Mono"
+			                    :subfamily "Bold"
+			                    :size 12)
+	         (make-instance 'xft:font
+			                    :family "FontAwesome"
+			                    :subfamily "Regular"
+			                    :size 12)))
 
 
 ;;============
@@ -318,6 +319,10 @@ running in the current group"
 
 ;==system
 
+;===screensaver
+(defcommand screensaver-activate () ()
+  (run-shell-command "xscreensaver-command --activate"))
+
 ;===mouse
 ; Moving the mouse for me
 (defmacro with-focus-lost (&body body)
@@ -424,6 +429,8 @@ restore it's always-on-top state afterwords"
 ;===startup
 (defcommand deploy-startup () ()
   (run-shell-command "picom -b")
+  ;; (run-shell-command "xscreensaver -nosplash &")
+  ;; (run-shell-command "noip-duc --daemonize --hostnames all.ddnskey.com --username j9x5xhq --password iyuQPahV6fWn")
   (run-shell-command "emacs --daemon"))
 
 ;===remote drives
@@ -622,7 +629,7 @@ restore it's always-on-top state afterwords" (let ((cw (gensym))
 ; set desktop background color, as fallback
 (setf (xlib:window-background (screen-root (current-screen))) #x47456d)
 ; set wallpaper
-(run-shell-command "feh --bg-fill ~/.wallpaper.jpg")
+(run-shell-command "feh --bg-fill ~/.*wallpaper.*")
 
 ;==mouse
 (setf *mouse-focus-policy* :click);cursor focus on click
@@ -1271,11 +1278,12 @@ when the `car' is a formatter and t when it is a shell command."
     (define-key m (kbd "q") "end-session")
     (define-key m (kbd "Q") "quit-confirm")
     (define-key m (kbd "c") "quit") ;Quit StumpWM.
+    (define-key m (kbd "C-s") "screensaver-activate")
+    (define-key m (kbd "l") "exec xlock") ;lock screens
     (define-key m (kbd "L") "logout")
     (define-key m (kbd "s") "suspend-computer")
     (define-key m (kbd "S") "shutdown-computer")
     (define-key m (kbd "C-r") "restart-computer")
-    ;(define-key m (kbd "l") "exec xlock") ;&&&lock screens
     m))
 (define-key *root-map* (kbd "q") 'quit=>>)
 

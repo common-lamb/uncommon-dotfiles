@@ -73,6 +73,10 @@ This function should only modify configuration layer settings."
             shell-default-shell 'shell)
      (conda :variables
             conda-anaconda-home "~/conda")
+     (ess
+      :variables ess-r-backend 'lsp)
+     (llm-client :variables
+                 llm-client-enable-gptel t)
 
                                         ; lisp layers
      emacs-lisp
@@ -80,14 +84,15 @@ This function should only modify configuration layer settings."
      parinfer
      ;; (scheme :variables scheme-implementations '(guile))
 
-                                        ;writing layers
+                                        ; data layers
+     csv
+     markdown
+     pdf
+     finance
+                                        ; writing layers
      (org
       :variables
       org-enable-reveal-js-support t)
-     (llm-client :variables
-                 llm-client-enable-gptel t)
-     pdf
-     finance
      ;; (languagetool :variables
      ;;               languagetool-show-error-on-jump t
      ;;               langtool-default-language "en-US")
@@ -104,7 +109,8 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(citeproc-org
                                       ;; oc-csl ;; package unavailable
-                                      citeproc)
+                                      citeproc
+                                      gptel)
 
 
    ;; A list of packages that cannot be updated.
@@ -208,7 +214,7 @@ It should only modify the values of Spacemacs settings."
    ;; number is the project limit and the second the limit on the recent files
    ;; within a project.
    dotspacemacs-startup-lists '((recents . 5)
-                                (projects . 7))
+                                (projects . 5))
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
@@ -250,8 +256,20 @@ It should only modify the values of Spacemacs settings."
    ;; package can be defined with `:package', or a theme can be defined with
    ;; `:location' to download the theme package, refer the themes section in
    ;; DOCUMENTATION.org for the full theme specifications.
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(zonokai-red
+                         white-sand
+                         soft-stone
+                         smyx
+                         modus-operandi-tinted
+                         heroku
+                         hc-zenburn
+                         eziam-dusk
+                         ;; ef-arcadia
+                         em-melissa-dark
+                         doom-zenburn
+                         alect-light-alt
+                         gruvbox-light-hard
+                         anti-zenburn)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -619,14 +637,17 @@ before packages are loaded."
   ;; ;; mermaid executable
   ;; (setq ob-mermaid-cli-path "/home/user/.var/app/org.gnu.emacs/data/node/bin/mmdc")
 
+  ;; ;;paren balance
+  ;; (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
+
   ;; ;; default browser
   ;; (setq browse-url-browser-function 'browse-url-generic)
   ;; (setq browse-url-generic-program "nyxt")
 
   ;; ;; auto update changed buffers
-  ;; (global-auto-revert-mode) ;keep buffers up to date with disks
-  ;; (setq auto-revert-use-notify nil) ;poll disk dont wait for os
-  ;; (auto-save-visited-mode) ;make auto save same as explicit save
+  ;; (global-auto-revert-mode) ; keep buffers up to date with disks
+  ;; (setq auto-revert-use-notify nil) ; poll disk dont wait for os
+  ;; (auto-save-visited-mode) ; make auto save same as explicit save
 
   ;; ;; orgmode settings
   (setq org-agenda-files '("~/mnt/db/1/org" "~/org"))

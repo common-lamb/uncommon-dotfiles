@@ -92,3 +92,8 @@ asdf will compile where needed
   asdf:*source-registry-parameter*)
 
 (ocicl-runtime-set-registry)
+
+;; lla, from lispstat, requires liblas to compile
+;; $ sudo apt-get install liblas-dev liblapack-dev
+;; (defvar *lla-configuration*
+;;   '(:libraries ("/usr/lib/x86_64-linux-gnu/blas/libblas.so")))
